@@ -23,7 +23,7 @@ def extract_wwr_jobs(keyword):
                 anchor = anchors[1]
                 # 딕셔너리 형태로 저장되기 때문에 anchor의 키 'href'에 접근할 수 있다.
                 link = anchor['href']
-                company, kind, region = anchor.find_all('span', class_ = "company")  # 클래스가 company인 span 찾기
+                company, kind, location = anchor.find_all('span', class_ = "company")  # 클래스가 company인 span 찾기
                 title = anchor.find('span', class_ = "title") # find는 결과를 가져다 준다.
                 # .string를 하면 HTML태그들이 사라지고 내용만 남는다.
                 # 데이터들을 딕셔너리에 저장
@@ -31,7 +31,7 @@ def extract_wwr_jobs(keyword):
                     'link': f"https://weworkremotely.com{link}",
                     'company': company.string,
                     'kind': kind.string,
-                    'region': region.string,
+                    'location': location.string,
                     'position': title.string
                 }
                 results.append(job_data) # 다시 반복되면 전의 데이터들이 사라지기 때문에 리스트에 저장
