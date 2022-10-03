@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 # 페이지 개수를 세는 함수
 def get_page_count(keyword):
     browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -18,7 +19,7 @@ def get_page_count(keyword):
     pages = pagination.find_all("li", recursive = False)
     count = len(pages)
     if count >= 5:
-        return 5
+        return 5 # 최대 5페이지 까지만
     else:
         return count
 
@@ -28,6 +29,7 @@ def extract_indeed_jobs(keyword):
     pages = get_page_count(keyword) # extract_indeed_jobs(keyword)를 실행하면 같은 키워드로 실행
     print("Found", pages)
     browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
     results = []
 
     for page in range(pages):
@@ -49,7 +51,7 @@ def extract_indeed_jobs(keyword):
             zone = job.find("div", class_ = "mosaic-zone")
             if zone == None:
                 # h2 = job.find("h2", class_="jobTitle")
-                # a= h2.find("a")
+                # a = h2.find("a")
                 anchor = job.select_one("h2 a") # h2 안에 있는 a를 가져옴 (위 두줄과 동일, 더 편함)
                 # BeautifulSoup는 HTML구조를 리스트또는 딕셔너리로 변환하기 때문에
                 # anchor의 key로 접근 가능
@@ -57,11 +59,12 @@ def extract_indeed_jobs(keyword):
                 link = anchor['href']
                 company = job.find("span", class_ = "companyName")
                 location = job.find("div", class_ = "companyLocation")
+                # csv 파일은 콤마로 구분하기 때문에 콤마를 스페이스로 변환 replace(","," ")
                 job_data = {
                             'link': f"https://kr.indeed.com{link}", # 링크 앞 https~는 웹사이트에서 복사
-                            'company': company.string,  # span을 가져와서 .string로 텍스트만 추출
-                            'location': location.string, # div를 가져와서 .string로 텍스트만 추출
-                            'position': title
+                            'company': company.string.replace(","," "),  # span을 가져와서 .string로 텍스트만 추출
+                            'location': location.string.replace(","," "), # div를 가져와서 .string로 텍스트만 추출
+                            'position': title.replace(","," ")
                         }
                 results.append(job_data)
     return results

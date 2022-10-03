@@ -29,10 +29,9 @@ def extract_wwr_jobs(keyword):
                 # 데이터들을 딕셔너리에 저장
                 job_data = {
                     'link': f"https://weworkremotely.com{link}",
-                    'company': company.string,
-                    'kind': kind.string,
+                    'company': company.string.replace(","," "),
                     'location': location.string,
-                    'position': title.string
+                    'position': title.string.replace(","," ")
                 }
                 results.append(job_data) # 다시 반복되면 전의 데이터들이 사라지기 때문에 리스트에 저장
         return results
